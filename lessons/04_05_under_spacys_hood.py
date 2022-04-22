@@ -55,5 +55,5 @@ def clean_text(text):
     return (cleaned)
 
 
-nlp = spacy.load("en_core_web_lg")
-nlp.to_disk("en_core_web_lg_demo")
+nlp = spacy.load("en_core_web_sm")
+nlp.to_disk("en_core_web_sm_demo")

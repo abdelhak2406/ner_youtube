@@ -3,6 +3,8 @@
 #        Leveraging spaCy's NER       #
 #               with                  #
 #        Dr. W.J.B. Mattingly         #
+"""Here we just created a custom rule based ner using spacy."""
+
 import spacy
 from spacy.lang.en import English
 from spacy.pipeline import EntityRuler
@@ -19,6 +21,9 @@ def save_data(file, data):
         json.dump(data, f, indent=4)
 
 def generate_better_characters(file):
+    """Here we try to account for all the possibilities of occurences of
+        characters.
+    """
     data = load_data(file)
     print (len(data))
     new_characters = []
@@ -63,6 +68,10 @@ def generate_better_characters(file):
     return (final_characters)
 
 def create_training_data(file, type):
+    """we create training data with the generate_better_characters method.
+        the training data is a list of dictionnaries all structured this way :
+            {"label": type, "pattern": item}
+    """
     data = generate_better_characters(file)
     patterns = []
     for item in data:
@@ -74,40 +83,50 @@ def create_training_data(file, type):
     return (patterns)
 
 def generate_rules(patterns):
+    """Class where we create the rules (remember we are in rule based
+        methods.
+    """
+    # TODO: find out and learn more about all this methods and functions
     nlp = English()
     ruler = EntityRuler(nlp)
     ruler.add_patterns(patterns)
     nlp.add_pipe(ruler)
+
+    # save the "rules"  into "hp_ner" directory
     nlp.to_disk("hp_ner")
 
 def test_model(model, text):
-    doc = nlp(text)
+    doc = model(text)   #we pass the model as an argument, here we just put
     results = []
     for ent in doc.ents:
         results.append(ent.text)
     return (results)
 
-patterns = create_training_data("data/hp_characters.json", "PERSON")
-generate_rules(patterns)
-# print (patterns)
+if __name__ == "__main__":
 
-nlp = spacy.load("hp_ner")
-ie_data = {}
-with open ("data/hp.txt", "r")as f:
-    text = f.read()
+    patterns = create_training_data("data/hp_characters.json", "PERSON")
+    generate_rules(patterns)
+    # print (patterns)
 
-    chapters = text.split("CHAPTER")[1:]
-    for chapter in chapters:
-        chapter_num, chapter_title = chapter.split("\n\n")[0:2]
-        chapter_num = chapter_num.strip()
-        segments = chapter.split("\n\n")[2:]
-        hits = []
-        for segment in segments:
-            segment = segment.strip()
-            segment = segment.replace("\n", " ")
-            results = test_model(nlp, segment)
-            for result in results:
-                hits.append(result)
-        ie_data[chapter_num] = hits
+    nlp = spacy.load("hp_ner")
+    ie_data = {}
+    with open ("data/hp.txt", "r")as f:
+        text = f.read()
 
-save_data("data/hp_data.json", ie_data)
+        # we just loop through the Harry Potter book chapter per chapter
+        # and we get the entities of every chapter.
+        chapters = text.split("CHAPTER")[1:]
+        for chapter in chapters:
+            chapter_num, chapter_title = chapter.split("\n\n")[0:2]
+            chapter_num = chapter_num.strip()
+            segments = chapter.split("\n\n")[2:]
+            hits = []
+            for segment in segments:
+                segment = segment.strip()
+                segment = segment.replace("\n", " ")
+                results = test_model(nlp, segment)
+                for result in results:
+                    hits.append(result)
+            ie_data[chapter_num] = hits
+
+    save_data("data/hp_data.json", ie_data)

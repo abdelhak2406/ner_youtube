@@ -4,6 +4,8 @@
 #        Training the New Model       #
 #               with                  #
 #        Dr. W.J.B. Mattingly         #
+# TODO: he made an error above it's not lesson 09.01
+
 import spacy
 import json
 import random
@@ -19,7 +21,10 @@ def train_spacy(TRAIN_DATA, iterations):
     ner.add_label("CONC_CAMP")
     nlp.add_pipe(ner, name="conc_camp_ner")
 
+    # here we do that to make sure we are not selectiong our pipe
+    # because we will only affect our pipe when training the model
     other_pipes = [pipe for pipe in nlp.pipe_names if pipe != "conc_camp_ner"]
+    # Disable all thhe other "default" pipes
     with nlp.disable_pipes(*other_pipes):
         optimizer = nlp.begin_training()
         for itn in range(iterations):

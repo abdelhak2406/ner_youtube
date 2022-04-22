@@ -3,6 +3,9 @@
 #        Leveraging spaCy's NER       #
 #               with                  #
 #        Dr. W.J.B. Mattingly         #
+""" THE Goal of this script is to generate training dataset for spacy in order to
+    train our model later on using .... Spacy!!
+"""
 import spacy
 import json
 import random
@@ -17,7 +20,7 @@ def save_data(file, data):
         json.dump(data, f, indent=4)
 
 def test_model(model, text):
-    doc = nlp(text)
+    doc = model(text)
     results = []
     entities = []
     for ent in doc.ents:
@@ -26,7 +29,17 @@ def test_model(model, text):
         results = [text, {"entities": entities}]
         return (results)
 
-#TRAIN_DATA = [(text, {"entities": [(start, end, label)]})]
+# spacy's training data structure!!
+#TRAIN_DATA =
+#          [
+#           (text,
+#                {"entities":
+#                   [
+#                       (start, end, label)
+#                   ]
+#                }
+#           )
+#          ]
 
 nlp = spacy.load("hp_ner")
 TRAIN_DATA = []

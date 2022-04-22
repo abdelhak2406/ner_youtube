@@ -12,9 +12,10 @@ main_nlp = spacy.load("en_core_web_sm")
 for item in new_vocab:
     main_nlp.vocab.strings.add(item)
 
+#conc_camps_model is the model created in 09_04
 conc_camps_nlp = spacy.load("conc_camps_model")
 ner = conc_camps_nlp.get_pipe("ner")
-
+# EARLIER PIPES HAVE PRIMCY OVER LATER PIPES UNLESS SPECIFIED WITH THE `override` argument
 main_nlp.add_pipe(ner, name="conc_camp_ner", before="ner")
 
 main_nlp.to_disk("main_model")

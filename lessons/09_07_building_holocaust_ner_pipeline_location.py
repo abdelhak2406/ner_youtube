@@ -15,6 +15,7 @@ for item in new_vocab:
 
 
 ####GET CAMPS####
+# he uses pretrained models!
 camp_nlp = spacy.load("./pretrained_models/camp_ner")
 camp_ner = camp_nlp.get_pipe("ner")
 main_nlp.add_pipe(camp_ner, name="camp_ner")

@@ -7,6 +7,7 @@
 import spacy
 from spacy.tokens import Span
 
+#
 main_nlp = spacy.blank("en")
 
 english_nlp = spacy.load("en_core_web_sm")
@@ -14,6 +15,9 @@ english_ner = english_nlp.get_pipe("ner")
 main_nlp.add_pipe(english_ner, name="en_dln")
 
 def en_narrow(doc):
+    """This function is here to grab only few entities and limit the scope
+        of the entities detected by the default spaCy ner model.
+    """
     labels = ["DATE", "GPE", "NORP"]
     l = []
     for old_ent in doc.ents:
